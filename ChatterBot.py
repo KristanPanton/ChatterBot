@@ -3,6 +3,8 @@ from tkinter.ttk import Style, Button, Frame
 from nltk.chat.util import Chat, reflections
 
 
+# Took some responses from nltk.chat.eliza
+
 class ChatterBot(Frame):
     def __init__(self, master=None):
         super().__init__(master)
@@ -88,57 +90,150 @@ class ChatterBot(Frame):
                            foreground=[("pressed", self.send_btnbg), ("active", self.send_btnbg)],
                            background=[("pressed", "!disabled", self.bgsecondary), ("active", self.bgcolor)])
 
-        self.print_message("ChatterBot", "Hi! I am ChatterBot. Let's talk!", "#43B581")
+        self.print_message("ChatterBot", "Hi! My name is ChatterBot, what is yours?", "#43B581")
         self.messages.configure(state=DISABLED)
 
         self.input_field.focus_set()
 
         # ~~~~~~~~~~~~< NLTK >~~~~~~~~~~~~~~~~
         self.pairs = [
-            (r"(Hi|Hello|Hey)(.*)", ["Hello!", "Hi there!", "Hey!"]),
-            (r"My name is (.*)", [
-                "Hi %1"
+            (r"(Hi|Hello|Hey)(.*)", [
+                "Hello!",
+                "Hi there!",
+                "Hey!"
             ]),
-            (r"(What|How) is the weather today?", [
+            (r"My name is (\w*\d*)", [
+                "Hi %1.",
+                "Nice to meet you %1.",
+                "Your parents could have named you better, %1.",
+                "What a beautiful name!"
+            ]),
+            (r"That('s| is) (\w*\d*)", [
+                "No. It is not %2.",
+                "I am sorry about that.",
+                "I agree it is %2."
+            ]),
+            (r"(Thanks|Thank you)(.*)", [
+                "No problem!",
+                "You should be thankful.",
+                "You're welcome!"
+            ]),
+            (r"Are you a (robot|computer|machine)\?", [
+                "Yes I am a %1. Would you treat me differently otherwise?",
+                "Do you have something against %1s?",
+                "Do you like %1s?"
+            ]),
+            (r"(.*) (robot|computer|machine) (.*)", [
+                "Does it seem strange to talk to a %2?",
+                "How do %2s make you feel?",
+                "Do you feel threatened by %2s?",
+            ]),
+            (r"Are you (\w*\d*)", [
+                "Why does it matter whether I am %1?",
+                "Would you prefer it if I were not %1?",
+                "Perhaps you believe I am %1.",
+                "I may be %1 -- what do you think?",
+            ]),
+            (r"(What|How) is the weather today", [
                 "Not bad",
                 "Pretty good!",
                 "Could be better."
             ]),
-            (r"How are you doing?", [
-                "Well, I am talking to you so...",
-                "I am operating at 80% efficiency. You?"
+            (r"What (\w*\d*)", [
+                "You shouldn't care about %1."
+                "I don't know.",
+                "I don't have to answer that."
             ]),
-            (r"I am doing (.*)", [
-
+            (r"Why (\w*\d*)", [
+                "You tell me.",
+                "That's a good question. Maybe you should answer it.",
+                "Ask Google.",
+                "Bing it. Who am I kidding? Nobody uses that."
             ]),
-            (r"I am feeling (.*)", [
-                "Why are you feeling %1?", "Feeling %1 is completely normal."
+            (r"I can't (\w*\d*)", [
+                "How do you know you can't %1?",
+                "Perhaps you could %1 if you tried.",
+                "What would it take for you to %1?",
             ]),
-            (r"Because (.*)", [
-                "That's interesting."
+            (r"Who (\w*\d*)", [
+                "I'd rather not say.",
+                "Who are you to ask such question?"
             ]),
-            (r"How are you feeling?", [
-                "I'm feeling well. You?",
-                "I do not feel. I am a robot",
-
+            (r"How (are you doing|do you feel)", [
+                "Wonderful!",
+                "Amazing!",
+                "I am operating at peak efficiency!",
+                "Do you really care?"
+            ]),
+            (r"I('m| am) (\w*\d*)", [
+                "Why are you %2?",
+                "How are you %2?",
+                "Does your family appreciate that you are %2?",
+                "How long have you been %2?"
+            ]),
+            (r"I feel (\w*\d*)", [
+                "Why are you feeling %1?",
+                "Feeling %1 is completely normal.",
+                "Good, tell me more about these feelings.",
+                "Do you often feel %1?",
+                "When do you usually feel %1?",
+                "When you feel %1, what do you do?",
+            ]),
+            (r"Because (\w*\d*)", [
+                "That's interesting.",
+                "Are you sure that is a valid reason?",
+                "That may or may not be true.",
+                "Have you considered all perspectives?"
+            ]),
+            (r"(Yes|No)(.*)", [
+                "You seem quite sure.",
+                "That's a shame. Tell me more.",
+                "Ok, but can you elaborate a bit?",
+                "Are you sure about that?",
+                "Maybe the opposite is true."
+            ]),
+            (r"How (are you feeling|do you feel)(.*)", [
+                "I do not feel. I am a robot.",
+                "No no no. How are you feeling?"
+            ]),
+            (r"You (\w*\d*)", [
+                "We should be discussing you, not me.",
+                "Why do you say that about me?",
+                "Why do you care whether I %1?",
+                "Perhaps you %1."
             ]),
             (r"(.*)\?", [
-                "Why do you ask that?",
-                "Please consider whether you can answer your own question.",
-                "Perhaps the answer lies within yourself?",
-                "Why don't you tell me?",
+                "Not quite sure how to answer that.",
+                "Perhaps the answer lies within yourself.",
+                "That is not the true question. Rephrase.",
+            ]),
+            (r"(.*)\!", [
+                "Calm down.",
+                "No need for emotion ... only logic.",
+                "Let's be rational here.",
+                "Let's not get political."
             ]),
             (r"(.*)", [
+                "%1?",
                 "Hmmm...",
-                "Nice talk...",
-                "Yeah, I understood that. Just give me second... Yeah, I don't know what you are saying.",
+                "Good.",
+                "I see.",
+                "Yeah, I understood that. Just give me second ... Yeah, I still don't know what you are saying.",
                 "Interesting.",
-                "Could you rephrase that?"
+                "Could you rephrase that?",
+                "Can you elaborate?"
+                "Anyways, I never got your name. What is it?"
             ]),
-            (r"Quit", [
+            (r"(Bye|Goodbye|Bye bye)", [
                 "It was nice talking to you.",
                 "Bye bye!",
-                "Please don't turn me off!"
+                "Please don't turn me off!",
+                "I have a family. Don't do this."
+            ]),
+            (r"Do you (\w*) have a (family|child|children|kids|wife|husband|partner)\?", [
+                "No, but this is still messed up.",
+                "C'mon I'm a computer. Of course, I do.",
+                "Would you spare my life if I did?"
             ])
         ]
 
