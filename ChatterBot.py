@@ -17,7 +17,7 @@ class ChatterBot(Frame):
         self.send_btnfg = "#171A1F"
         self.fgcolor = "#EEEEEF"
         self.bgcolor = "#3D4146"
-        self.bgsecondary = "#1B1E23"
+        self.bgsecondary = "#3498DB"
         self.font = "calibri"
 
         # ~~~~~~~~~~< Keybindings >~~~~~~~~~~
@@ -27,7 +27,7 @@ class ChatterBot(Frame):
         master.columnconfigure(0, weight=1)
         master.rowconfigure(0, weight=1)
 
-        master.geometry("500x600")
+        master.geometry("800x500")
 
         self.menubar = Menu(master)
         master.config(menu=self.menubar)
@@ -81,7 +81,7 @@ class ChatterBot(Frame):
 
         self.btn_style.theme_use("clam")
         self.btn_style.configure("TButton",
-                                 font=(self.font, 25, "bold"),
+                                 font=(self.font, 20, "bold"),
                                  foreground=self.send_btnfg, background=self.send_btnbg,
                                  relief="flat",
                                  width=0,
@@ -100,35 +100,36 @@ class ChatterBot(Frame):
             (r"(Hi|Hello|Hey)(.*)", [
                 "Hello!",
                 "Hi there!",
-                "Hey!"
+                "Hey!",
+                "Greetings."
             ]),
-            (r"My name is (\w*\d*)", [
+            (r"My name is (\w+( +\w+)*)", [
                 "Hi %1.",
                 "Nice to meet you %1.",
                 "Your parents could have named you better, %1.",
-                "What a beautiful name!"
+                "What a beautiful name!",
             ]),
-            (r"That('s| is) (\w*\d*)", [
+            (r"That('s| is) (\w+( +\w+)*)", [
                 "No. It is not %2.",
                 "I am sorry about that.",
-                "I agree it is %2."
+                "I agree it is %2.",
             ]),
             (r"(Thanks|Thank you)(.*)", [
                 "No problem!",
                 "You should be thankful.",
-                "You're welcome!"
+                "You're welcome!",
             ]),
             (r"Are you a (robot|computer|machine)\?", [
                 "Yes I am a %1. Would you treat me differently otherwise?",
                 "Do you have something against %1s?",
-                "Do you like %1s?"
+                "Do you like %1s?",
             ]),
             (r"(.*) (robot|computer|machine) (.*)", [
                 "Does it seem strange to talk to a %2?",
                 "How do %2s make you feel?",
                 "Do you feel threatened by %2s?",
             ]),
-            (r"Are you (\w*\d*)", [
+            (r"Are you (\w+( +\w+)*)", [
                 "Why does it matter whether I am %1?",
                 "Would you prefer it if I were not %1?",
                 "Perhaps you believe I am %1.",
@@ -137,110 +138,125 @@ class ChatterBot(Frame):
             (r"(What|How) is the weather today", [
                 "Not bad",
                 "Pretty good!",
-                "Could be better."
+                "Could be better.",
             ]),
-            (r"What (\w*\d*)", [
-                "You shouldn't care about %1."
+            (r"What (\w+( +\w+)*)", [
+                "You've come to the wrong program.",
                 "I don't know.",
-                "I don't have to answer that."
+                "I don't have to answer that.",
+                "Why would I know?",
+                "What %1? You tell me."
             ]),
-            (r"Why (\w*\d*)", [
+            (r"Why (\w+( +\w+)*)", [
                 "You tell me.",
                 "That's a good question. Maybe you should answer it.",
                 "Ask Google.",
-                "Bing it. Who am I kidding? Nobody uses that."
+                "Bing it. Who am I kidding? Nobody uses that.",
             ]),
-            (r"I can't (\w*\d*)", [
+            (r"(Will|Would|Can) (\w+( +\w+)*)", [
+                "Probably not.",
+                "Possibly.",
+                "Not likely.",
+                "There is a chance.",
+                "Maybe.",
+                "Depends.",
+            ]),
+            (r"I can't (\w+( +\w+)*)", [
                 "How do you know you can't %1?",
                 "Perhaps you could %1 if you tried.",
                 "What would it take for you to %1?",
             ]),
-            (r"Who (\w*\d*)", [
+            (r"Who (\w+( +\w+)*)", [
                 "I'd rather not say.",
-                "Who are you to ask such question?"
+                "Who are you to ask such a question?",
+                "Not me."
             ]),
             (r"How (are you doing|do you feel)", [
                 "Wonderful!",
                 "Amazing!",
                 "I am operating at peak efficiency!",
-                "Do you really care?"
+                "Do you really care?",
             ]),
-            (r"I('m| am) (\w*\d*)", [
+            (r"(I'm|I am) (\w+( +\w+)*)", [
                 "Why are you %2?",
                 "How are you %2?",
                 "Does your family appreciate that you are %2?",
-                "How long have you been %2?"
+                "How long have you been %2?",
+                "%1 %2?"
             ]),
-            (r"I feel (\w*\d*)", [
-                "Why are you feeling %1?",
-                "Feeling %1 is completely normal.",
+            (r"(.*) feel (\w+( +\w+)*)", [
+                "Why are you feeling %2?",
+                "Feeling %2 is completely normal.",
                 "Good, tell me more about these feelings.",
-                "Do you often feel %1?",
-                "When do you usually feel %1?",
-                "When you feel %1, what do you do?",
+                "Do you often feel %2?",
+                "When do you usually feel %2?",
+                "When you feel %2, what do you do?",
             ]),
-            (r"Because (\w*\d*)", [
+            (r"Because (.*)", [
                 "That's interesting.",
                 "Are you sure that is a valid reason?",
                 "That may or may not be true.",
-                "Have you considered all perspectives?"
+                "Have you considered all perspectives?",
             ]),
             (r"(Yes|No)(.*)", [
                 "You seem quite sure.",
                 "That's a shame. Tell me more.",
                 "Ok, but can you elaborate a bit?",
                 "Are you sure about that?",
-                "Maybe the opposite is true."
+                "Maybe the opposite is true.",
             ]),
             (r"How (are you feeling|do you feel)(.*)", [
                 "I do not feel. I am a robot.",
-                "No no no. How are you feeling?"
+                "No no no. How are you feeling?",
+                "I'd much rather hear about you."
             ]),
-            (r"You (\w*\d*)", [
+            (r"You (\w+( +\w+)*)", [
                 "We should be discussing you, not me.",
                 "Why do you say that about me?",
-                "Why do you care whether I %1?",
-                "Perhaps you %1."
+                "That may be true, but what about you?",
+                "Perhaps you %1.",
             ]),
             (r"(.*)\?", [
                 "Not quite sure how to answer that.",
                 "Perhaps the answer lies within yourself.",
                 "That is not the true question. Rephrase.",
+                "Maybe I should ask you the same question."
             ]),
             (r"(.*)\!", [
                 "Calm down.",
                 "No need for emotion ... only logic.",
                 "Let's be rational here.",
-                "Let's not get political."
-            ]),
-            (r"(.*)", [
-                "%1?",
-                "Hmmm...",
-                "Good.",
-                "I see.",
-                "Yeah, I understood that. Just give me second ... Yeah, I still don't know what you are saying.",
-                "Interesting.",
-                "Could you rephrase that?",
-                "Can you elaborate?"
-                "Anyways, I never got your name. What is it?"
+                "Take a chill pill.",
             ]),
             (r"(Bye|Goodbye|Bye bye)", [
                 "It was nice talking to you.",
                 "Bye bye!",
                 "Please don't turn me off!",
-                "I have a family. Don't do this."
+                "I have a family. Don't do this.",
             ]),
-            (r"Do you (\w*) have a (family|child|children|kids|wife|husband|partner)\?", [
-                "No, but this is still messed up.",
-                "C'mon I'm a computer. Of course, I do.",
-                "Would you spare my life if I did?"
+            (r"(\w+( +\w+)*)(.*)", [
+                "%1?",
+                "Hmmm...",
+                "Good.",
+                "I see.",
+                "Interesting.",
+                "Continue.",
+                "Could you rephrase that?",
+                "Can you elaborate?",
+                "Go on.",
+                "Tell me in a way that I can understand.",
+                "How does that make you feel?"
+            ]),
+            (r"(.*)", [
+                "Is that even English?"
             ])
-        ]
 
+        ]
+        # reflections["are"] = "am"
         self.chat = Chat(self.pairs, reflections)
 
     def bot_response(self):
-        response = self.chat.respond(self.user_input)
+        response = self.chat.respond(self.user_input).capitalize()
         self.print_message("ChatterBot", response, "#43B581")
 
     def print_message(self, sender, text, color=None):
@@ -274,6 +290,7 @@ class ChatterBot(Frame):
     def clear_chat(self):
         self.messages.configure(state=NORMAL)
         self.messages.delete("1.0", END)
+        self.print_message("ChatterBot", "Hi! My name is ChatterBot, what is yours?", "#43B581")
         self.messages.configure(state=DISABLED)
 
 
