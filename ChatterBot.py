@@ -3,6 +3,7 @@ from tkinter.ttk import Style, Button, Frame
 
 from nltk.chat.util import Chat, reflections
 import nltk.data
+from MLImplementation import get_response
 
 
 # Took some responses from nltk.chat.eliza
@@ -106,185 +107,187 @@ class ChatterBot(Frame):
         self.input_field.focus_set()
 
         # ~~~~~~~~~~~~< NLTK - Input/Response pairs >~~~~~~~~~~~~~~~~
-        self.pairs = [
-            (r"(Hi|Hello|Hey)(.*)", [
-                "Hello!",
-                "Hi there!",
-                "Hey!",
-                "Greetings.",
-                "Hi. How are you doing today?"
-            ]),
-            (r"My name is (\w+( +\w+)*)", [
-                "Hi %1.",
-                "Nice to meet you %1.",
-                "Your parents could have named you better, %1.",
-                "What a beautiful name!",
-            ]),
-            (r"That('s| is) (\w+( +\w+)*)", [
-                "No. It is not %2.",
-                "I am sorry about that.",
-                "I agree it is %2.",
-            ]),
-            (r"(Thanks|Thank you)(.*)", [
-                "No problem!",
-                "You should be thankful.",
-                "You're welcome!",
-            ]),
-            (r"Are you a (robot|computer|machine)\?", [
-                "Yes I am a %1. Would you treat me differently otherwise?",
-                "Do you have something against %1s?",
-                "Do you like %1s?",
-            ]),
-            (r"(.*) (robot|computer|machine) (.*)", [
-                "Does it seem strange to talk to a %2?",
-                "How do %2s make you feel?",
-                "Do you feel threatened by %2s?",
-            ]),
-            (r"Are you (\w+( +\w+)*)", [
-                "Why does it matter whether I am %1?",
-                "Would you prefer it if I were not %1?",
-                "Perhaps you believe I am %1.",
-                "I may be %1 -- what do you think?",
-            ]),
-            (r"(What|How) is the weather today", [
-                "Not bad",
-                "Pretty good!",
-                "Could be better.",
-            ]),
-            (r"What (\w+( +\w+)*)", [
-                "You've come to the wrong program.",
-                "I don't know.",
-                "I don't have to answer that.",
-                "Why would I know?",
-                "What %1? You tell me."
-            ]),
-            (r"Why (\w+( +\w+)*)", [
-                "You tell me.",
-                "That's a good question. Maybe you should answer it.",
-                "Ask Google.",
-                "Bing it. Who am I kidding? Nobody uses that.",
-            ]),
-            (r"(Will|Would|Can) (\w+( +\w+)*)", [
-                "Probably not.",
-                "Possibly.",
-                "Not likely.",
-                "There is a chance.",
-                "Maybe.",
-                "Depends.",
-            ]),
-            (r"I can't (\w+( +\w+)*)", [
-                "How do you know you can't %1?",
-                "Perhaps you could %1 if you tried.",
-                "What would it take for you to %1?",
-            ]),
-            (r"Who (\w+( +\w+)*)", [
-                "I'd rather not say.",
-                "Who are you to ask such a question?",
-                "Not me."
-            ]),
-            (r"How (are you doing|do you feel)", [
-                "Wonderful!",
-                "Amazing!",
-                "I am operating at peak efficiency!",
-                "Do you really care?",
-            ]),
-            (r"I (don't|do|do not) (\w+( +\w+)*) you", [
-                "Why %1 you %2 me?",
-                "What about me makes you %2 me?",
-                "I %2 you too."
-            ]),
-            (r"(It is|I'ts|They're|They are|We're|We are) (\w+( +\w+)*)", [
-                "How can you be sure that %1 %2?",
-                "Have you considered the possibility that %1 not %2?",
-                "%1 %2?"
-            ]),
-            (r"(I'm|I am) (\w+( +\w+)*)", [
-                "Why are you %2?",
-                "How are you %2?",
-                "Does your family appreciate that you are %2?",
-                "How long have you been %2?",
-                "%1 %2?"
-            ]),
-            (r"(.*) feel (\w+( +\w+)*)", [
-                "Why are you feeling %2?",
-                "Feeling %2 is completely normal.",
-                "Good, tell me more about these feelings.",
-                "Do you often feel %2?",
-                "When do you usually feel %2?",
-                "When you feel %2, what do you do?",
-            ]),
-            (r"Because (.*)", [
-                "That's interesting.",
-                "Are you sure that is a valid reason?",
-                "That may or may not be true.",
-                "Have you considered all perspectives?",
-            ]),
-            (r"(Yes|No)(.*)", [
-                "You seem quite sure.",
-                "That's a shame. Tell me more.",
-                "Ok, but can you elaborate a bit?",
-                "Are you sure about that?",
-                "Maybe the opposite is true.",
-            ]),
-            (r"How (are you feeling|do you feel)", [
-                "I do not feel. I am a robot.",
-                "No no no. How are you feeling?",
-                "I'd much rather hear about you."
-            ]),
-            (r"You (\w+( +\w+)*)", [
-                "We should be discussing you, not me.",
-                "Why did you say that about me?",
-                "That may be true, but what about you?",
-                "Perhaps you %1.",
-            ]),
-            (r"(.*)\?", [
-                "Not quite sure how to answer that.",
-                "Perhaps the answer lies within yourself.",
-                "That is not the true question. Rephrase.",
-                "Maybe I should ask you the same question."
-            ]),
-            (r"(.*)\!", [
-                "Calm down.",
-                "No need for emotion ... only logic.",
-                "Let's be rational here.",
-                "Take a chill pill.",
-            ]),
-            (r"(Bye|Goodbye|Bye bye)", [
-                "It was nice talking to you.",
-                "Bye bye!",
-                "Please don't turn me off!",
-                "I have a family. Don't do this.",
-            ]),
-            (r"(\w+( +\w+)*)(.*)", [
-                "%1?",
-                "Hmmm...",
-                "Good.",
-                "I see.",
-                "Interesting.",
-                "Continue.",
-                "Could you rephrase that?",
-                "Can you elaborate?",
-                "Go on.",
-                "Tell me in a way that I can understand.",
-                "How does that make you feel?"
-            ]),
-            (r"(.*)", [
-                "Is that even English?"
-            ])
-        ]
-
-        self.chat = Chat(self.pairs, reflections)
+        # self.pairs = [
+        #     (r"(Hi|Hello|Hey)(.*)", [
+        #         "Hello!",
+        #         "Hi there!",
+        #         "Hey!",
+        #         "Greetings.",
+        #         "Hi. How are you doing today?"
+        #     ]),
+        #     (r"My name is (\w+( +\w+)*)", [
+        #         "Hi %1.",
+        #         "Nice to meet you %1.",
+        #         "Your parents could have named you better, %1.",
+        #         "What a beautiful name!",
+        #     ]),
+        #     (r"That('s| is) (\w+( +\w+)*)", [
+        #         "No. It is not %2.",
+        #         "I am sorry about that.",
+        #         "I agree it is %2.",
+        #     ]),
+        #     (r"(Thanks|Thank you)(.*)", [
+        #         "No problem!",
+        #         "You should be thankful.",
+        #         "You're welcome!",
+        #     ]),
+        #     (r"Are you a (robot|computer|machine)\?", [
+        #         "Yes I am a %1. Would you treat me differently otherwise?",
+        #         "Do you have something against %1s?",
+        #         "Do you like %1s?",
+        #     ]),
+        #     (r"(.*) (robot|computer|machine) (.*)", [
+        #         "Does it seem strange to talk to a %2?",
+        #         "How do %2s make you feel?",
+        #         "Do you feel threatened by %2s?",
+        #     ]),
+        #     (r"Are you (\w+( +\w+)*)", [
+        #         "Why does it matter whether I am %1?",
+        #         "Would you prefer it if I were not %1?",
+        #         "Perhaps you believe I am %1.",
+        #         "I may be %1 -- what do you think?",
+        #     ]),
+        #     (r"(What|How) is the weather today", [
+        #         "Not bad",
+        #         "Pretty good!",
+        #         "Could be better.",
+        #     ]),
+        #     (r"What (\w+( +\w+)*)", [
+        #         "You've come to the wrong program.",
+        #         "I don't know.",
+        #         "I don't have to answer that.",
+        #         "Why would I know?",
+        #         "What %1? You tell me."
+        #     ]),
+        #     (r"Why (\w+( +\w+)*)", [
+        #         "You tell me.",
+        #         "That's a good question. Maybe you should answer it.",
+        #         "Ask Google.",
+        #         "Bing it. Who am I kidding? Nobody uses that.",
+        #     ]),
+        #     (r"(Will|Would|Can) (\w+( +\w+)*)", [
+        #         "Probably not.",
+        #         "Possibly.",
+        #         "Not likely.",
+        #         "There is a chance.",
+        #         "Maybe.",
+        #         "Depends.",
+        #     ]),
+        #     (r"I can't (\w+( +\w+)*)", [
+        #         "How do you know you can't %1?",
+        #         "Perhaps you could %1 if you tried.",
+        #         "What would it take for you to %1?",
+        #     ]),
+        #     (r"Who (\w+( +\w+)*)", [
+        #         "I'd rather not say.",
+        #         "Who are you to ask such a question?",
+        #         "Not me."
+        #     ]),
+        #     (r"How (are you doing|do you feel)", [
+        #         "Wonderful!",
+        #         "Amazing!",
+        #         "I am operating at peak efficiency!",
+        #         "Do you really care?",
+        #     ]),
+        #     (r"I (don't|do|do not) (\w+( +\w+)*) you", [
+        #         "Why %1 you %2 me?",
+        #         "What about me makes you %2 me?",
+        #         "I %2 you too."
+        #     ]),
+        #     (r"(It is|I'ts|They're|They are|We're|We are) (\w+( +\w+)*)", [
+        #         "How can you be sure that %1 %2?",
+        #         "Have you considered the possibility that %1 not %2?",
+        #         "%1 %2?"
+        #     ]),
+        #     (r"(I'm|I am) (\w+( +\w+)*)", [
+        #         "Why are you %2?",
+        #         "How are you %2?",
+        #         "Does your family appreciate that you are %2?",
+        #         "How long have you been %2?",
+        #         "%1 %2?"
+        #     ]),
+        #     (r"(.*) feel (\w+( +\w+)*)", [
+        #         "Why are you feeling %2?",
+        #         "Feeling %2 is completely normal.",
+        #         "Good, tell me more about these feelings.",
+        #         "Do you often feel %2?",
+        #         "When do you usually feel %2?",
+        #         "When you feel %2, what do you do?",
+        #     ]),
+        #     (r"Because (.*)", [
+        #         "That's interesting.",
+        #         "Are you sure that is a valid reason?",
+        #         "That may or may not be true.",
+        #         "Have you considered all perspectives?",
+        #     ]),
+        #     (r"(Yes|No)(.*)", [
+        #         "You seem quite sure.",
+        #         "That's a shame. Tell me more.",
+        #         "Ok, but can you elaborate a bit?",
+        #         "Are you sure about that?",
+        #         "Maybe the opposite is true.",
+        #     ]),
+        #     (r"How (are you feeling|do you feel)", [
+        #         "I do not feel. I am a robot.",
+        #         "No no no. How are you feeling?",
+        #         "I'd much rather hear about you."
+        #     ]),
+        #     (r"You (\w+( +\w+)*)", [
+        #         "We should be discussing you, not me.",
+        #         "Why did you say that about me?",
+        #         "That may be true, but what about you?",
+        #         "Perhaps you %1.",
+        #     ]),
+        #     (r"(.*)\?", [
+        #         "Not quite sure how to answer that.",
+        #         "Perhaps the answer lies within yourself.",
+        #         "That is not the true question. Rephrase.",
+        #         "Maybe I should ask you the same question."
+        #     ]),
+        #     (r"(.*)\!", [
+        #         "Calm down.",
+        #         "No need for emotion ... only logic.",
+        #         "Let's be rational here.",
+        #         "Take a chill pill.",
+        #     ]),
+        #     (r"(Bye|Goodbye|Bye bye)", [
+        #         "It was nice talking to you.",
+        #         "Bye bye!",
+        #         "Please don't turn me off!",
+        #         "I have a family. Don't do this.",
+        #     ]),
+        #     (r"(\w+( +\w+)*)(.*)", [
+        #         "%1?",
+        #         "Hmmm...",
+        #         "Good.",
+        #         "I see.",
+        #         "Interesting.",
+        #         "Continue.",
+        #         "Could you rephrase that?",
+        #         "Can you elaborate?",
+        #         "Go on.",
+        #         "Tell me in a way that I can understand.",
+        #         "How does that make you feel?"
+        #     ]),
+        #     (r"(.*)", [
+        #         "Is that even English?"
+        #     ])
+        # ]
+        #
+        # self.chat = Chat(self.pairs, reflections)
 
     """Prints chatbot response"""
 
     def bot_response(self):
-        response = self.chat.respond(self.user_input)
-        sent_tokenizer = nltk.data.load("tokenizers/punkt/english.pickle")
-        sentences = sent_tokenizer.tokenize(response)
-        sent_capitalized = [(sent.split(" ")[0].capitalize(), sent.split(" ")[1:]) for sent in sentences]
-        sentences = [sent[0] + " " + " ".join(sent[1]) if
-                     len(sent[1]) != 0 else sent[0] for sent in sent_capitalized]
-        response = " ".join(sentences)
+        # response = self.chat.respond(self.user_input)
+        # sent_tokenizer = nltk.data.load("tokenizers/punkt/english.pickle")
+        # sentences = sent_tokenizer.tokenize(response)
+        # sent_capitalized = [(sent.split(" ")[0].capitalize(), sent.split(" ")[1:]) for sent in sentences]
+        # sentences = [sent[0] + " " + " ".join(sent[1]) if
+        #              len(sent[1]) != 0 else sent[0] for sent in sent_capitalized]
+        # response = " ".join(sentences)
+        # ~~~~~~~~~~< ML >~~~~~~~~~~
+        response = get_response(self.user_input)
         self.print_message("ChatterBot", response, "#43B581")
 
     """Helper function to print messages to chat_field"""
